@@ -8,6 +8,23 @@ services:
       - ./src:/tmp/hapi-fhir-jpaserver-starter/src/
     depends_on:
       - db
+  elasticsearch:
+    image: elasticsearch:5.6.16
+    environment:
+      - "discovery.type=single-node"
+    volumes:
+    - elasticsearch:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+  kibana:
+    image: kibana:5.6.15
+    container_name: kibana
+    environment:
+      ELASTICSEARCH_URL: "http://elasticsearch:9200"
+    ports:
+      - 5601:5601
+    depends_on:
+      - elasticsearch
   db:
     image: postgres
     environment:
@@ -20,3 +37,4 @@ services:
       - fhirData:/var/lib/postgres/data
 volumes:
   fhirData:
+  elasticsearch:
